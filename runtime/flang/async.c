@@ -119,6 +119,9 @@ asy_wait(struct asy *asy)
 static int
 asy_wait(struct asy *asy)
 {
+#if defined(WASM32)
+  return 0;
+#else
   long len;
   int s;
   int tn;
@@ -160,6 +163,7 @@ asy_wait(struct asy *asy)
   asy->atd[0].off = asy->atd[asy->outstanding_transactions].off;
   asy->outstanding_transactions = 0;
   return (0);
+#endif
 }
 #endif
 
@@ -310,7 +314,11 @@ Fio_asy_read(struct asy *asy, void *adr, long len)
   asy->aiocb[tn].aio_nbytes = len;
   memset(&(asy->aiocb[tn].aio_sigevent), 0, sizeof(struct sigevent));
   asy->aiocb[tn].aio_offset = asy->atd[tn].off;
+#if defined(WASM32)
+  n = 0;
+#else
   n = aio_read(&(asy->aiocb[tn]));
+#endif
 #endif
 
   if (n == -1) {
@@ -364,7 +372,11 @@ Fio_asy_write(struct asy *asy, void *adr, long len)
   asy->aiocb[tn].aio_nbytes = len;
   memset(&(asy->aiocb[tn].aio_sigevent), 0, sizeof(struct sigevent));
   asy->aiocb[tn].aio_offset = asy->atd[tn].off;
+#if defined(WASM32)
+  n = 0;
+#else
   n = aio_write(&(asy->aiocb[tn]));
+#endif
 #endif
 
   if (n == -1) {
