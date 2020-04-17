@@ -8,7 +8,9 @@
 #include <stdint.h>
 #include <signal.h>
 #include <sys/ucontext.h>
+#if !defined(WASM32) //emscripten does not support this
 #include <execinfo.h>
+#endif
 #include <stdioInterf.h>
 #include "dumpregs.h"
 #include <stdlib.h>
@@ -167,6 +169,8 @@ print_back_trace_line(char * bt_str, void const * const addr)
 void
 __abort_trace(int skip)
 {
+  //todo use emscripten_get_callstack 
+#if !defined(WASM32)
   void *array[MAXTRACE];
   size_t size;
   char **strings;
@@ -193,6 +197,9 @@ __abort_trace(int skip)
       print_back_trace_line(strings[i], array[i]);
   }
   free(strings);
+#else
+  fprintf(__io_stderr(), "  --- traceback not available on wasm32\n");
+#endif
 }
 
 /*
