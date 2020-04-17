@@ -30,6 +30,11 @@ elseif( ${TARGET_ARCHITECTURE} STREQUAL "aarch64" )
    -DTARGET_LLVM_ARM64
    -DTARGET_LINUX_ARM
   )
+elseif( ${TARGET_ARCHITECTURE} STREQUAL "wasm32" )
+  add_definitions(
+   -DTARGET_LLVM_WASM32
+   -DTARGET_LINUX_WASM
+  )
 elseif( ${TARGET_ARCHITECTURE} STREQUAL "ppc64le" )
   add_definitions(
     -DTARGET_LINUX_POWER

@@ -78,20 +78,22 @@ add_flang_library(flangrti_shared
 # Resolve symbols against libm
 target_link_libraries(flangrti_shared m)
 
-# Import OpenMP
-if (NOT DEFINED LIBOMP_EXPORT_DIR)
-  find_library( 
-    FLANG_LIBOMP
-    libomp.so
-    HINTS ${CMAKE_BINARY_DIR}/lib)
-  target_link_libraries(flangrti_shared ${FLANG_LIBOMP})
-endif()
+if( NOT ${TARGET_ARCHITECTURE} STREQUAL "wasm32" )
+  # Import OpenMP
+  if (NOT DEFINED LIBOMP_EXPORT_DIR)
+    find_library( 
+      FLANG_LIBOMP
+      libomp.so
+      HINTS ${CMAKE_BINARY_DIR}/lib)
+    target_link_libraries(flangrti_shared ${FLANG_LIBOMP})
+  endif()
 
-find_library( 
-  LIBPGMATH
-  libpgmath.so
-  HINTS ${CMAKE_BINARY_DIR}/lib)
-target_link_libraries(flangrti_shared ${LIBPGMATH})
+  find_library( 
+      LIBPGMATH
+    libpgmath.so
+    HINTS ${CMAKE_BINARY_DIR}/lib)
+  target_link_libraries(flangrti_shared ${LIBPGMATH})
+endif()
 
 if( ${TARGET_ARCHITECTURE} STREQUAL "aarch64" )
   target_compile_definitions(flangrti_static PRIVATE TARGET_LINUX_ARM)
