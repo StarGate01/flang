@@ -14,7 +14,11 @@
  * rewritten to use the appropriate C type which represents a 64-bit
  * integer rather than DBLINT64/DBLUINT64.
  */
+#if defined(WASM32)
+extern int __ftn_32in64_;
+#else
 int __ftn_32in64_;
+#endif
 
 extern void __utl_i_add64(), __utl_i_sub64();
 extern void __utl_i_div64(), __utl_i_mul64();

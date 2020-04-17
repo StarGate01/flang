@@ -153,7 +153,11 @@ __io_ferror(void *p)
 int
 __io_getfd(void *fp)
 {
+#if !defined(WASM32)
   return (((FILE *)fp)->_fileno);
+#else
+  return fileno((FILE *)fp); //musl does not expose FILE
+#endif
 }
 
 /* is a tty? */
